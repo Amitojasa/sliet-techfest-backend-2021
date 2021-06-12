@@ -95,11 +95,14 @@ exports.signOut = (req, res) => {
 exports.isSignedIn = expressJwt({
     secret: process.env.SECRET,
     userProperty: "auth",
-    algorithms: ['RS256']
+    algorithms: ['HS256']
 });
 
 exports.isAuthenticated = (req, res, next) => {
-    let checker = req.profile && req.auth && req.auth._id === req.profile._id;
+    console.log("AUTH: " + req.auth._id)
+
+    console.log("PROF: " + req.profile._id)
+    let checker = req.profile && req.auth && req.auth._id == req.profile._id;
 
     if (!checker) {
         res.status(403).json({
@@ -111,7 +114,7 @@ exports.isAuthenticated = (req, res, next) => {
 
 
 exports.isAdmin = (req, res, next) => {
-    if (req.profile.role == 0) {
+    if (req.profile.role === 0) {
         res.status(403).json({
             error: "You are not admin, ACCESS DENIED"
         })
